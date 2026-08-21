@@ -1,1 +1,3 @@
-# Chai aur Code Backend Project using Express
+# MVC Architecture
+
+MVC-architecture based YouTube + Twitter merged backend project
