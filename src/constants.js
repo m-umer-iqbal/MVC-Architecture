@@ -1,1 +1,1 @@
-export const DB_NAME = "Chai-aur-Code-Project-using-Express";
+export const DB_NAME = "MVC-Architecture";
