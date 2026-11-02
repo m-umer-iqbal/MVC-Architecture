@@ -85,28 +85,34 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
 });
 
 const getPlaylistById = asyncHandler(async (req, res) => {
-    const { playlistId } = req.params
+    const { playlistId } = req.params;
     //TODO: get playlist by id
+    const playlist = await checkPlaylistId(playlistId);
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, playlist, "Playlist fetched successfully.")
+        );
 })
 
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
-    const { playlistId, videoId } = req.params
+    const { playlistId, videoId } = req.params;
 })
 
 const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
-    const { playlistId, videoId } = req.params
+    const { playlistId, videoId } = req.params;
     // TODO: remove video from playlist
 
 })
 
 const deletePlaylist = asyncHandler(async (req, res) => {
-    const { playlistId } = req.params
+    const { playlistId } = req.params;
     // TODO: delete playlist
 })
 
 const updatePlaylist = asyncHandler(async (req, res) => {
-    const { playlistId } = req.params
-    const { name, description } = req.body
+    const { playlistId } = req.params;
+    const { name, description } = req.body;
     //TODO: update playlist
 })
 
