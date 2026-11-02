@@ -13,7 +13,7 @@ const checkPlaylistId = async (playlistId) => {
         throw new ApiError(400, "Playlist Id is not valid.");
     }
 
-    const playlist = await Playlist.findById(playlistId);
+    const playlist = await Playlist.findById(playlistId).populate("video");
 
     if (!playlist) {
         throw new ApiError(404, "Playlist does not exist.");
@@ -105,8 +105,16 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Video Id is not valid.");
     }
 
+    const isDuplicateVideo = playlist.video.some(
+        (existingVideoId) => existingVideoId.toString() === videoId
+    );
+
+    if (isDuplicateVideo) {
+        throw new ApiError(400, "Video is already in the playlist.");
+    }
+
     playlist.video.push(videoId);
-    playlist.save({ validateBeforeSave: false });
+    await playlist.save({ validateBeforeSave: false });
 
     return res
         .status(200)
@@ -125,8 +133,10 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Video Id is not valid.");
     }
 
-    playlist.video.pop(videoId);
-    playlist.save({ validateBeforeSave: false });
+    playlist.video = playlist.video.filter(
+        (id) => id.toString() !== videoId
+    );
+    await playlist.save({ validateBeforeSave: false });
 
     return res
         .status(200)
@@ -163,7 +173,7 @@ const updatePlaylist = asyncHandler(async (req, res) => {
 
     playlist.name = name;
     playlist.description = description;
-    playlist.save({ validateBeforeSave: false });
+    await playlist.save({ validateBeforeSave: false });
 
     return res
         .status(200)

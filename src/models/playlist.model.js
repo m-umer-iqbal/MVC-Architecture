@@ -4,8 +4,7 @@ import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 const playlistSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     description: {
         type: String,
