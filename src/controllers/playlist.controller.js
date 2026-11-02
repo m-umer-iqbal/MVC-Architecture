@@ -97,12 +97,42 @@ const getPlaylistById = asyncHandler(async (req, res) => {
 
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
     const { playlistId, videoId } = req.params;
+
+    const playlist = await checkPlaylistId(playlistId);
+    if (!videoId || videoId === "") {
+        throw new ApiError(400, "Video Id is required.");
+    } else if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "Video Id is not valid.");
+    }
+
+    playlist.video.push(videoId);
+    playlist.save({ validateBeforeSave: false });
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, playlist, "Video added successfully.")
+        );
 })
 
 const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
     const { playlistId, videoId } = req.params;
-    // TODO: remove video from playlist
 
+    const playlist = await checkPlaylistId(playlistId);
+    if (!videoId || videoId === "") {
+        throw new ApiError(400, "Video Id is required.");
+    } else if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "Video Id is not valid.");
+    }
+
+    playlist.video.pop(videoId);
+    playlist.save({ validateBeforeSave: false });
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, playlist, "Video removed successfully.")
+        );
 })
 
 const deletePlaylist = asyncHandler(async (req, res) => {
