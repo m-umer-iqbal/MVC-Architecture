@@ -138,12 +138,39 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
 const deletePlaylist = asyncHandler(async (req, res) => {
     const { playlistId } = req.params;
     // TODO: delete playlist
+
+    await checkPlaylistId(playlistId);
+
+    await Playlist.findByIdAndDelete(playlistId);
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, "Playlist deleted successfully.")
+        );
 })
 
 const updatePlaylist = asyncHandler(async (req, res) => {
     const { playlistId } = req.params;
     const { name, description } = req.body;
-    //TODO: update playlist
+
+    const playlist = await checkPlaylistId(playlistId);
+    if (!name || name === "") {
+        throw new ApiError(400, "Playlist name is required.");
+    } else if (!description || description === "") {
+        throw new ApiError(400, "Playlist description is required.");
+    }
+
+    playlist.name = name;
+    playlist.description = description;
+    playlist.save({ validateBeforeSave: false });
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, playlist, "Playlist updated successfully.")
+        );
+
 })
 
 export {
